@@ -11,6 +11,7 @@ jobs:
   # define a tarefa a ser executada, no caso, a tarefa de build
   build:
     # define onde a tarefa de build será executada, caso em um ambiente ubuntu
+    # durante a execução da rotina, todo o código é copiado para o ambiente criado
     runs-on: ubuntu-latest
     # passos para executar a tarefa de build
     steps:
@@ -26,10 +27,18 @@ jobs:
         # indica a versão do Go que desejamos
         with:
           go-version: "1.20"
-      # este passo fará a compilação do código Go
-      - name: Build
+      # passo para construção do banco de dados por meio do docker compose
+      # este passo necessitará do docker instalado no nosso ambiente
+      # a imagem "ubuntu-latest" do GitHub Actions já contempla a instalação do docker
+      - name: Build DB
         # executa um comando em nosso ambiente
-        run: go build -v ./...
+        run: docker compose build
+      # passo para subir do banco de dados por meio do docker compose
+      - name: Create DB
+        run: docker compose up -d
       # este passo executará os testes do código Go
       - name: Test
-        run: go test -v ./...
+        run: go test -v main_test.go
+      # este passo fará a compilação do código Go
+      - name: Build
+        run: go build -v main.go
