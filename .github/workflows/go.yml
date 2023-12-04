@@ -3,9 +3,9 @@ name: Go
 # quando e onde a rotina será executada
 on:
   push:
-    branches: ["main"]
+    branches: ["testes"]
   pull_request:
-    branches: ["main"]
+    branches: ["testes"]
 # define as tarefas que serão executadas nesta rotina
 jobs:
   # define a tarefa a ser executada, no caso, a tarefa de test
