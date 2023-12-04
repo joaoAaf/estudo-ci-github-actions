@@ -39,9 +39,6 @@ jobs:
       # este passo executará os testes do código Go
       - name: Test
         run: go test -v main_test.go
-      # este passo fará a compilação do código Go
-      - name: Build
-        run: go build -v main.go
   # tarefa de build
   build:
     needs: test
