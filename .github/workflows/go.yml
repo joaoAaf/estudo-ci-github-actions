@@ -8,8 +8,8 @@ on:
     branches: ["main"]
 # define as tarefas que serão executadas nesta rotina
 jobs:
-  # define a tarefa a ser executada, no caso, a tarefa de build
-  build:
+  # define a tarefa a ser executada, no caso, a tarefa de test
+  test:
     # define onde a tarefa de build será executada, caso em um ambiente ubuntu
     # durante a execução da rotina, todo o código é copiado para o ambiente criado
     runs-on: ubuntu-latest
@@ -39,6 +39,15 @@ jobs:
       # este passo executará os testes do código Go
       - name: Test
         run: go test -v main_test.go
+      # este passo fará a compilação do código Go
+      - name: Build
+        run: go build -v main.go
+  # tarefa de build
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       # este passo fará a compilação do código Go
       - name: Build
         run: go build -v main.go
