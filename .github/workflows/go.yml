@@ -1,0 +1,56 @@
+# nome da rotina a ser executada
+name: Go
+# quando e onde a rotina será executada
+on:
+  push:
+    branches: ["testes"]
+  pull_request:
+    branches: ["testes"]
+# define as tarefas que serão executadas nesta rotina
+jobs:
+  # define a tarefa a ser executada, no caso, a tarefa de test
+  test:
+    # define onde a tarefa será executada, caso em um ambiente ubuntu
+    # durante a execução da rotina, todo o código é copiado para o ambiente criado
+    runs-on: ${{ matrix.os }}
+    # cria uma estratégia para execução do código em diferentes ambientes
+    # Pode haver variações dos OS e/ ou das versões das linguagens/ frameworks utilizados
+    strategy:
+      matrix:
+        go_version: ['1.18', '1.20', '>=1.21']
+        os: [ubuntu-latest, ubuntu-20.04]
+    # passos para executar a tarefa de build
+    steps:
+      # define o repositorio em que o ambiente será configurado
+      # no caso, será utilizado o repositório do "actions" com nome "checkout" na versão "v3"
+      # isso permitirá utilizar o uso de funções do GitHub Actions no nosso ambiente
+      - uses: actions/checkout@v3
+      # passo de configuração do Go no ambiente
+      - name: Set up Go
+        # este passo se utilizará o repositório, que contem todos os códigos
+        # necessários para configuração do Go no ambiente
+        uses: actions/setup-go@v4
+        # indica a versão do Go que desejamos
+        with:
+          go-version: ${{ matrix.go_version }}
+      # passo para construção do banco de dados por meio do docker compose
+      # este passo necessitará do docker instalado no nosso ambiente
+      # a imagem "ubuntu-latest" do GitHub Actions já contempla a instalação do docker
+      - name: Build DB
+        # executa um comando em nosso ambiente
+        run: docker compose build
+      # passo para subir do banco de dados por meio do docker compose
+      - name: Create DB
+        run: docker compose up -d
+      # este passo executará os testes do código Go
+      - name: Test
+        run: go test -v main_test.go
+  # tarefa de build
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # este passo fará a compilação do código Go
+      - name: Build
+        run: go build -v main.go
