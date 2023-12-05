@@ -12,12 +12,13 @@ jobs:
   test:
     # define onde a tarefa será executada, caso em um ambiente ubuntu
     # durante a execução da rotina, todo o código é copiado para o ambiente criado
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     # cria uma estratégia para execução do código em diferentes ambientes
     # Pode haver variações dos OS e/ ou das versões das linguagens/ frameworks utilizados
     strategy:
       matrix:
-        go_version: ['1.18', '1.20', '>=1.20']
+        go_version: ['1.18', '1.20', '>=1.21']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     # passos para executar a tarefa de build
     steps:
       # define o repositorio em que o ambiente será configurado
