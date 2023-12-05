@@ -17,7 +17,7 @@ jobs:
     # Pode haver variações dos OS e/ ou das versões das linguagens/ frameworks utilizados
     strategy:
       matrix:
-        go_version: ['1.18', '1.21', '>=1.21']
+        go_version: ['1.18', '1.20', '>=1.21']
         os: [ubuntu-latest]
     # passos para executar a tarefa de build
     steps:
